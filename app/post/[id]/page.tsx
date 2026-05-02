@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { connectDB } from "@/lib/mongodb";
+import Post from "@/lib/models/Post";
 
 interface PostData {
   _id: string;
@@ -12,12 +14,10 @@ interface PostData {
 }
 
 async function getPost(id: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-  const res = await fetch(`${baseUrl}/api/posts/${id}`, {
-    cache: "no-store",
-  });
-  if (!res.ok) return null;
-  return res.json();
+  await connectDB();
+  const post = await Post.findById(id).lean();
+  if (!post) return null;
+  return JSON.parse(JSON.stringify(post)) as PostData;
 }
 
 export default async function PostPage({

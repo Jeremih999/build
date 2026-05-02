@@ -1,5 +1,7 @@
 import FilterBar from "@/components/FilterBar";
 import PostCard from "@/components/PostCard";
+import { connectDB } from "@/lib/mongodb";
+import Post from "@/lib/models/Post";
 
 interface PostData {
   _id: string;
@@ -13,14 +15,10 @@ interface PostData {
 }
 
 async function getPosts(category?: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-  const url = category
-    ? `${baseUrl}/api/posts?category=${category}`
-    : `${baseUrl}/api/posts`;
-
-  const res = await fetch(url, { cache: "no-store" });
-  if (!res.ok) return [];
-  return res.json();
+  await connectDB();
+  const filter = category ? { category } : {};
+  const posts = await Post.find(filter).sort({ createdAt: -1 }).lean();
+  return JSON.parse(JSON.stringify(posts)) as PostData[];
 }
 
 export default async function HomePage({
