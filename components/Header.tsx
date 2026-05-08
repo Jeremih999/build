@@ -7,12 +7,12 @@ export default function Header() {
         <Link href="/" className="text-xl font-bold text-gray-900">
           Simple Blog
         </Link>
-        <Link
+        {/* <Link
           href="/dashboard"
           className="text-sm text-gray-500 hover:text-gray-900"
         >
           Dashboard
-        </Link>
+        </Link> */}
       </div>
     </header>
   );
